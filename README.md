@@ -1,5 +1,4 @@
 <h1 align="center">Rafaela Papale - C216</h1>
-<h2 align="center">Lab REST server e client</h2>
 
 ### :speaker: Descrição
 <p>
@@ -16,5 +15,3 @@ Este é o repositório para a disciplina de C216 - Sistemas Distribuídos realiz
 ```
 $ git clone https://github.com/rafapapale/RafaelaPapale_C216.git
 ```
-
-### :wrench: Execução
