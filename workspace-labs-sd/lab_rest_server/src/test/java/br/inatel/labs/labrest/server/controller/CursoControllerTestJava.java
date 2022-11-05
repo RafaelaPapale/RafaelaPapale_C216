@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CursoControllerTestJava {
+
     @Autowired
     private WebTestClient webTestClient;
 
@@ -39,9 +40,6 @@ public class CursoControllerTestJava {
 
         assertNotNull(cursoRespondido);
         assertEquals(cursoRespondido.getId(),cursoIdValido);
-
-	assertThat(cursoRespondido).isNotNull();
-	assertThat(cursoIdValido).isEqualTo(cursoRespondido.getId());	
     }
 
     @Test
@@ -54,11 +52,11 @@ public class CursoControllerTestJava {
                 .expectStatus().isNotFound();
     }
 
-    // DESAFIO PASSADO EM SALA DE AULA
     @Test
-    void dadoNovoCursoValido_quandoPostCurso_entaoResponseComStatusCreated(){
+    void dadoNovoCurso_quandoPostCurso_entaoRespondeComStatusCreatedECursoValido(){
+
         Curso novoCurso = new Curso();
-        novoCurso.setDescricao("REST com Spring Boot e Spring WebFlux");
+        novoCurso.setDescricao("Testes");
         novoCurso.setCargaHoraria(120);
 
         Curso cursoRespondido = webTestClient.post()
@@ -69,45 +67,45 @@ public class CursoControllerTestJava {
                 .expectBody(Curso.class)
                 .returnResult().getResponseBody();
 
-        assertThat(cursoRespondido).isNotNull();
-	assertThat(cursoRespondido.getId()).isNotNull();
+        assertNotNull(cursoRespondido);
+        assertNotNull(cursoRespondido.getId());
     }
 
     @Test
-    void dadoCursoValido_quandoPutCurso_entaoResponseComStatusAccepted() {
-        Curso cursoExistente = new Curso(1L, "REST e Spring Boot e Spring WebFlux", 120);
+    void dadoCursoIdValido_quandoPutCursoPeloId_entaoRespondeComStatusAcceptedECorpoVazio(){
+
+        Curso cursoExistente = new Curso(1L,"Descricao atualizada do curso", 120);
 
          webTestClient
                 .put()
                 .uri("/curso")
                 .bodyValue(cursoExistente)
                 .exchange()
-                .expectStatus().isAccepted();
+                .expectStatus().isAccepted()
+                 .expectBody().isEmpty();
     }
 
     @Test
-	void dadoCursoValido_quandoDeleteCursoPeloId_entaoResponseComStatusDeleted() {
-		Long cursoIdValidoRemover = 1L;
-	
-		Curso cursoRespondido = webTestClient.delete()
-			.uri("/curso/" + cursoIdValidoRemover)
-			.exchange()
-			.expectStatus()
-				.isNoContent()
-			.expectBody(Curso.class)
-				.returnResult()
-				.getResponseBody();
-		
-		assertThat(cursoRespondido).isNull();
-	}
+    void dadoCursoIdValido_quandoDeleteCursoPeloId_entaoRespondeComStatusNoContentECorpoVazio(){
 
-    @Test
-    void dadoCursoInvalido_quandoDeleteCursoPeloId_respostaComStatusNotFound(){
-        Long cursoIdInvalidoRemover = 99L;
+        Long cursoIdRemover = 2L; //Id trocado para não quebrar outros testes
 
         webTestClient
                 .delete()
-                .uri("/curso/" + cursoIdInvalidoRemover)
+                .uri("/curso/" + cursoIdRemover)
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
+    }
+
+    @Test
+    void dadoCursoIdInvalido_quandoDeleteCursoPeloId_entaoRespondeComStatusNotFound(){
+
+        Long cursoIdRemover = 99L;
+
+        webTestClient
+                .delete()
+                .uri("/curso/" + cursoIdRemover)
                 .exchange()
                 .expectStatus().isNotFound();
     }
